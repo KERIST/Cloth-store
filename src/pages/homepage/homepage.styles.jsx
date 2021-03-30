@@ -5,6 +5,6 @@ export const HomePageContainer = styled.section`
 `;
 
 export const HomePageWrapper = styled.div`
-    width: 1480px;
+    max-width: 1480px;
     margin: 0 auto;
 `;

@@ -6,7 +6,7 @@ export const HeaderContainer = styled.header`
 `
 
 export const HeaderWrapper = styled.div`
-    width: 1480px;
+    max-width: 1480px;
     margin: 0 auto;
     display: flex;
     justify-content: space-between;

@@ -1,11 +1,9 @@
 import { combineReducers } from 'redux';
 
-const testReducer = (state = {}, action) => {
-    switch(action.type) {
-        default: return state;
-    }
-}
+import directoryReducer from './directory/directory.reducer';
 
-const rootReducer = combineReducers({test: testReducer});
+const rootReducer = combineReducers({
+    directory: directoryReducer
+});
 
 export default rootReducer;
