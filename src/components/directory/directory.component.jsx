@@ -4,7 +4,7 @@ import { createStructuredSelector } from 'reselect';
 import DirectoryItem from '../directory-item/directory-item.component';
 import { DirectoryContainer } from './directory.styles';
 
-import { directoryItemsSelector } from '../../redux/directory/directory.selector';
+import { directoryItemsSelector } from '../../redux/directory/directory.selectors';
 
 const Directory = ({ menuItems }) => (
     <DirectoryContainer>
