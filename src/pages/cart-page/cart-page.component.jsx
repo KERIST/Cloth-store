@@ -1,34 +1,20 @@
 import { connect } from 'react-redux';
-import styled from 'styled-components';
 import BreadcrumbComponent from '../../components/breadcrumb/breadcrumb.component';
 import { createStructuredSelector } from 'reselect';
 import { Table } from 'semantic-ui-react';
 
 import CartItem from '../../components/cart-item/cart-item.component';
-import { selectCartItems, selectCartItemsAmount } from '../../redux/cart/cart.selectors';
-import { removeItemFromCart } from '../../redux/cart/cart.actions';
+import { selectCartItems, selectCartItemsAmount, selectCartItemsTotalPrice } from '../../redux/cart/cart.selectors';
+import { removeItemFromCart, changeItemAmount } from '../../redux/cart/cart.actions';
+import { CartPageContainer, CartPageContent, CartPageTitle, CartPageTotal, CartPageEmpty } from './cart-page.styles';
 
-const CartPageContainer = styled.div`
-  max-width: 1480px;
-  margin: 0 auto;
-`;
-
-const CartPageContent = styled.section`
-
-`
-
-const CartPageTitle = styled.h2`
-
-`
-
-const CartPage = ({ cartItems, removeItemFromCart, cartItemsAmount }) => {
-
+const CartPage = ({ cartItems, removeItemFromCart, cartItemsAmount, changeItemAmount, totalPrice }) => {
   return (<CartPageContainer>
     <BreadcrumbComponent />
     <CartPageContent>
       <CartPageTitle>Your Cart ({cartItemsAmount} items)</CartPageTitle>
     </CartPageContent>
-    <Table>
+    <Table compact>
       <Table.Header>
         <Table.Row>
           <Table.HeaderCell>Item</Table.HeaderCell>
@@ -36,31 +22,27 @@ const CartPage = ({ cartItems, removeItemFromCart, cartItemsAmount }) => {
           <Table.HeaderCell>Price</Table.HeaderCell>
           <Table.HeaderCell>Quantity</Table.HeaderCell>
           <Table.HeaderCell>Total</Table.HeaderCell>
+          <Table.HeaderCell></Table.HeaderCell>
         </Table.Row>
       </Table.Header>
       <Table.Body>
-        {cartItems.map((itemProps) => <CartItem {...itemProps} removeItemFromCart={removeItemFromCart} />)}
+        {!cartItemsAmount ? <Table.Row><Table.Cell colSpan="6"><CartPageEmpty>Cart is empty</CartPageEmpty></Table.Cell></Table.Row> : null}
+        {cartItems.map(({id, ...otherProps}) => <CartItem key={id} id={id} {...otherProps} removeItemFromCart={removeItemFromCart} changeItemAmount={changeItemAmount} />)}
       </Table.Body>
     </Table>
+    <CartPageTotal>Total: {totalPrice}</CartPageTotal>
   </CartPageContainer>)
-}
-
-  // description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto commodi error perferendis minus consequatur. Molestias corporis distinctio ducimus magnam est accusamus, molestiae velit quae blanditiis ea voluptate quo, architecto laudantium!"
-  // id: "15"
-  // imageUrl: "https://i.ibb.co/XzcwL5s/black-shearling.png"
-  // name: "Black Jean Shearling"
-  // price: 50
-  // quantity: 3
-  // section: "jackets"
-  // size: "8"
+};
 
 const mapStateToProps = createStructuredSelector({
   cartItems: selectCartItems,
-  cartItemsAmount: selectCartItemsAmount
-})
+  cartItemsAmount: selectCartItemsAmount,
+  totalPrice: selectCartItemsTotalPrice
+});
 
 const mapDispatchToProps = dispatch => ({
-  removeItemFromCart: (item) => dispatch(removeItemFromCart(item))
-})
+  removeItemFromCart: (item) => dispatch(removeItemFromCart(item)),
+  changeItemAmount: (itemId, newQuantity) => dispatch(changeItemAmount(itemId, newQuantity))
+});
 
 export default connect(mapStateToProps, mapDispatchToProps)(CartPage);

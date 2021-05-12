@@ -1,60 +1,56 @@
 import { useState } from 'react';
-import { Checkbox, Rating, Select, Input } from 'semantic-ui-react';
-import styled from 'styled-components';
 
+import { Checkbox, Select } from 'semantic-ui-react';
 import FilterFormRating from '../filter-form-rating/filter-form-rating.component';
+import FilterFormTitle from '../filter-form-title/filter-form-title.component';
 
-const FilterFormContaier = styled.div`
-  
-`;
+import { FilterFormContaier, FilterFormGroup, FilterFormInput, FilterFormContent, 
+  FilterFormSizesContainer, FilterFormPrice, FilterFormPriceBtn } from './filter-form.styles';
 
-const FilterFormGroup = styled.div`
+const FilterForm = ({ sizesArray, ratingChangeHandler, sizeChangeHandler, minPriceChangeHandler, sortChangeHander, setFilterPriceValues }) => {
 
-`;
+  const [minPriceValue, setMinPriceValue] = useState('');
+  const [maxPriceValue, setMaxPriceValue] = useState('');
 
-const FilterFormInput = styled(Input)`
-  margin-right: 1rem;
-
-  input {
-    width: 7rem;
+  const handleMinPriceChange = (e) => {
+    setMinPriceValue(+e.target.value);
   }
-`;
 
-const FilterFormContent = styled.div`
-  ${FilterFormRating} {
-    margin: 1rem 0;
+  const handleMaxPriceChange = (e) => {
+    setMaxPriceValue(+e.target.value);
   }
-`;
 
-const FilterFormTitle = styled.div`
+  const handleClearPriceBtnClick = () => {
+    setMinPriceValue('');
+    setMaxPriceValue('');
+    setFilterPriceValues('', '');
+  }
 
-`;
+  const handleApplyPriceClick = () => {
+    setFilterPriceValues(minPriceValue, maxPriceValue)
+  }
 
-const FilterForm = ({ sizesArray, ratingChangeHandler, sizeChangeHandler, minPriceChangeHandler }) => {
   const sortOptions = [
-    { key: 'af', value: 'af', text: 'Afghanistan' },
-    { key: 'ax', value: 'ax', text: 'Aland Islands' },
-    { key: 'al', value: 'al', text: 'Albania' },
-    { key: 'dz', value: 'dz', text: 'Algeria' },
+    { key: 'default', value: 'default', text: 'Default' },
+    { key: 'pl', value: 'pl', text: 'Price: Low to High' },
+    { key: 'ph', value: 'ph', text: 'Price: High to Low' },
   ];
-
-  // TODO: MAKE THIS FILTER WORK!
 
   return (<FilterFormContaier>
     <FilterFormGroup>
-      <FilterFormTitle>Sort by</FilterFormTitle>
+      <FilterFormTitle text="Sort by" isHidden={true}/>
       <FilterFormContent>
-        <Select placeholder='Select your country' options={sortOptions} />
+        <Select placeholder='Sort by' options={sortOptions} onChange={sortChangeHander}/>
       </FilterFormContent>
     </FilterFormGroup>
     <FilterFormGroup>
-      <FilterFormTitle>Size</FilterFormTitle>
-      <FilterFormContent>
+      <FilterFormTitle text="Size" isHidden={true} />
+      <FilterFormSizesContainer>
         {sizesArray.map(value => <Checkbox key={value} label={value} onChange={sizeChangeHandler} />)}
-      </FilterFormContent>
+      </FilterFormSizesContainer>
     </FilterFormGroup>
     <FilterFormGroup>
-      <FilterFormTitle>Rating</FilterFormTitle>
+      <FilterFormTitle text="Rating" isHidden={true} />
       <FilterFormContent>
         <FilterFormRating ratingChangeHandler={ratingChangeHandler} inputValue={1} inputName="rating" ratingValue={1} ratingMax={5} />
         <FilterFormRating ratingChangeHandler={ratingChangeHandler} inputValue={2} inputName="rating" ratingValue={2} ratingMax={5} />
@@ -63,10 +59,13 @@ const FilterForm = ({ sizesArray, ratingChangeHandler, sizeChangeHandler, minPri
       </FilterFormContent>
     </FilterFormGroup>
     <FilterFormGroup>
-      <FilterFormTitle>Prize</FilterFormTitle>
+      <FilterFormTitle text="Price" isHidden={minPriceValue || maxPriceValue ? false : true} btnClickHandler={handleClearPriceBtnClick} />
       <FilterFormContent>
-        <FilterFormInput placeholder='Min.' type="number" min="0" />
-        <FilterFormInput placeholder='Max.' type="number" min="0" />
+        <FilterFormPrice>
+          <FilterFormInput placeholder='Min.' type="number" min="0" value={minPriceValue} onChange={handleMinPriceChange} />
+          <FilterFormInput placeholder='Max.' type="number" min="0" value={maxPriceValue} onChange={handleMaxPriceChange}/>
+        </FilterFormPrice>
+        <FilterFormPriceBtn color="blue" onClick={handleApplyPriceClick} >Update</FilterFormPriceBtn>
       </FilterFormContent>
     </FilterFormGroup>
     </FilterFormContaier>);

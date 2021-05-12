@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 export const BreadcrumbComponentContainer = styled.div`
   display: flex;
   font-size: 1.5rem;
-  padding: 1rem;
+  padding: 2rem;
   justify-content: center;
 `;
 

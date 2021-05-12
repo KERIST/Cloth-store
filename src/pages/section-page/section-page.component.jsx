@@ -1,30 +1,13 @@
 import React from 'react';
-import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 
 import BreadcrumbComponent from '../../components/breadcrumb/breadcrumb.component';
-import { selectItemsBySection } from '../../redux/items/items.selectors';
+import { selectItemsBySection } from '../../redux/sections/sections.selectors';
 import ProductItem from '../../components/product-item/product-item.component';
 import FilterForm from '../../components/filter-form/filter-form.component';
-
-const SectionPageContainer = styled.section`
-  max-width: 1480px;
-  margin: 0 auto;
-`;
-
-const SectionPageItemsContainer = styled.div`
-  display: grid;
-  grid-gap: 2rem;
-  grid-template-columns: repeat(4, 250px);
-  @media screen and (max-width: 800px) {
-      grid-template-columns: 1fr;
-  }
-`;
-
-const SectionPageContent = styled.div`
-  display: flex;
-`;
+import { SectionPageContainer, SectionPageItemsContainer, SectionPageContent } from './section-page.styles';
+import WithLoader from '../../components/withLoader/withLoader.component';
 
 class SectionPage extends React.Component {
   constructor() {
@@ -35,14 +18,16 @@ class SectionPage extends React.Component {
       filter: {
         rating: false,
         size: [],
-        minPrize: false,
-        maxPrize: false
+        minPrice: '',
+        maxPrice: '',
+        sortBy: ''
       }
     }
 
     this.handleRatingInputChange = this.handleRatingInputChange.bind(this);
     this.handleSizeCheckboxChange = this.handleSizeCheckboxChange.bind(this);
-    this.handleMinPriceChange = this.handleMinPriceChange.bind(this);
+    this.handleSortChange = this.handleSortChange.bind(this);
+    this.setFilterPriceValues = this.setFilterPriceValues.bind(this);
   }
 
   handleRatingInputChange(event) {
@@ -54,10 +39,18 @@ class SectionPage extends React.Component {
     }}))
   }
 
-  handleMinPriceChange(event) {
-    console.log(event);
+  setFilterPriceValues(minPrice, maxPrice) {
+    this.setState(state => ({
+      ...state, filter: {...state.filter, minPrice, maxPrice }
+    }))
   }
 
+  handleSortChange(event, value) {
+    this.setState(state => ({
+      ...state, filter: {...state.filter, sortBy: value.value}
+    }))
+  }
+ 
   handleSizeCheckboxChange(event, value) {
     const isCheckBoxChecked = value.checked;
     const checkboxValue = value.label;
@@ -126,10 +119,10 @@ class SectionPage extends React.Component {
   }
 
   render() {
-    const { items, filter: { rating, size } } = this.state;
+    const { items, filter: { size, sortBy, minPrice, maxPrice }, } = this.state;
     const { match: { params: section } } = this.props;
-    console.log(section);
-    const itemsArray = Object.entries(items).filter(([key, item]) => {
+
+    let itemsArray = Object.entries(items).filter(([key, item]) => {
       let isItemInSizes = true;
 
       size.forEach((value) => {
@@ -140,12 +133,32 @@ class SectionPage extends React.Component {
 
       return isItemInSizes;
     });
+
+    if(sortBy === 'pl') {
+      itemsArray = itemsArray.sort((a,b) => a[1].price - b[1].price);
+    } else if(sortBy === 'ph') {
+      itemsArray = itemsArray.sort((a,b) => b[1].price - a[1].price);
+    } 
+
+    if(minPrice) {
+      itemsArray = itemsArray.filter(([key, item]) => item.price > minPrice);
+    } else if(maxPrice) {
+      itemsArray = itemsArray.filter(([key, item]) => item.price < maxPrice);
+    }
+
     const filterSizesArray = this.getFilterSizesArray();
 
     return (<SectionPageContainer>
       <BreadcrumbComponent />
       <SectionPageContent>
-        <FilterForm sizesArray={filterSizesArray} minPriceChangeHandler={this.handleMinPriceChange} ratingChangeHandler={this.handleRatingInputChange} sizeChangeHandler={this.handleSizeCheckboxChange} />
+        <FilterForm 
+          sizesArray={filterSizesArray} 
+          ratingChangeHandler={this.handleRatingInputChange} 
+          sizeChangeHandler={this.handleSizeCheckboxChange} 
+          sizeValue={size}
+          sortChangeHander={this.handleSortChange}
+          setFilterPriceValues={this.setFilterPriceValues}
+          />
         <SectionPageItemsContainer>
           { itemsArray.map(([key, itemData]) => <ProductItem key={key} id={key} sectionPath={section.section} itemData={itemData} />) }
         </SectionPageItemsContainer>
@@ -158,4 +171,4 @@ const mapStateToProps = state => ({
   selectItemsBySection: (section) => selectItemsBySection(section)(state)
 });
 
-export default withRouter(connect(mapStateToProps)(SectionPage));
+export default WithLoader(withRouter(connect(mapStateToProps)(SectionPage)));

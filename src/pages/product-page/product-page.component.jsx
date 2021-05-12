@@ -1,9 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Rating, Button, Icon } from 'semantic-ui-react';
+import { Rating, Button, Icon, Message } from 'semantic-ui-react';
 
-import { selectItemById } from '../../redux/items/items.selectors';
+import { selectItemById, selectSectionLoadingStatus } from '../../redux/sections/sections.selectors';
 import { addItemToCart } from '../../redux/cart/cart.actions';
+import { selectUser } from '../../redux/user/user.selectors';
 
 import ProductSize from '../../components/product-size/product-size.component';
 import BreadcrumbComponent from '../../components/breadcrumb/breadcrumb.component';
@@ -11,6 +12,7 @@ import { ProductContainer, ProductImagesContainer, ProductDetailsContainer,
   ProductName, ProductRating, ProductPrice, 
   ProductQuantity, ProductQuantityValue, ProductSizes,
   ProductGroupTitle, ProductDescription, ProductImage, ProductContent } from './product-page.styles';
+import WithLoader from '../../components/withLoader/withLoader.component';
 
 class ProductPage extends React.Component {
   constructor() {
@@ -18,12 +20,15 @@ class ProductPage extends React.Component {
 
     this.state = {
       itemData: false,
-      quantityValue: 1
+      quantityValue: 1,
+      sizeValue: null,
+      showWarningMessage: false
     }
 
     this.handleDecreaseBtnClick = this.handleDecreaseBtnClick.bind(this);
     this.handleIncreaseBtnClick = this.handleIncreaseBtnClick.bind(this);
     this.handleFormSubmit = this.handleFormSubmit.bind(this);
+    this.handleSizeRadioChange = this.handleSizeRadioChange.bind(this);
   }
 
   componentDidMount() {
@@ -64,12 +69,24 @@ class ProductPage extends React.Component {
     }))
   }
 
+  handleSizeRadioChange(e) {
+    this.setState(state => ({
+      ...state, sizeValue: e.target.value, showWarningMessage: false
+    }))
+  }
+
   handleFormSubmit(e) {
     e.preventDefault();
 
     const { addItemToCart ,match: { params: { id } } } = this.props;
-    const { itemData, quantityValue } = this.state;
-    const sizeValue = e.target.size.value;
+    const { itemData, quantityValue, sizeValue } = this.state;
+
+    if(!sizeValue) {
+      this.setState(state => ({
+        ...state, showWarningMessage: true
+      }));
+      return;
+    }
 
     const itemToAdd = {
       ...itemData,
@@ -82,8 +99,9 @@ class ProductPage extends React.Component {
   }
 
   render() {
-    const { quantityValue, isItemInCart, itemData: { name, price, sizes, description, imageUrl } } = this.state;
-    const { handleFormSubmit, handleDecreaseBtnClick, handleIncreaseBtnClick} = this;
+    const { quantityValue, itemData: { name, price, sizes, description, imageUrl }, showWarningMessage } = this.state;
+    const { user } = this.props;
+    const { handleFormSubmit, handleDecreaseBtnClick, handleIncreaseBtnClick, handleSizeRadioChange} = this;
 
     return (<ProductContainer>
       <BreadcrumbComponent currentLicationName={name} />
@@ -94,7 +112,7 @@ class ProductPage extends React.Component {
         <ProductDetailsContainer onSubmit={handleFormSubmit}>
           <ProductName>{name}</ProductName>
           <ProductRating>
-            <Rating defaultRating={0} maxRating={5} disabled size="large" />
+            <Rating defaultRating={0} maxRating={5} disabled={user ? false : true} size="large" />
           </ProductRating>
           <ProductPrice>$ {price}</ProductPrice>
           <ProductGroupTitle>
@@ -113,7 +131,7 @@ class ProductPage extends React.Component {
             Size:
           </ProductGroupTitle>
           <ProductSizes>
-            {sizes ? sizes.map(value => <ProductSize key={value} value={value} groupName="size" />) : ''}
+            {sizes ? sizes.map(value => <ProductSize key={value} value={value} groupName="size" changeHandler={handleSizeRadioChange} />) : ''}
           </ProductSizes>
           <ProductGroupTitle>
             PRODUCT DESCRIPTION
@@ -121,6 +139,7 @@ class ProductPage extends React.Component {
           <ProductDescription>
             {description}
           </ProductDescription>
+          {showWarningMessage ? <Message warning header='You must select size to add product!' /> : null}
           <Button color='black' fluid type="submit" size="huge">
             <Icon name='shop' /> ADD TO CART
           </Button>
@@ -131,11 +150,13 @@ class ProductPage extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  selectItemById: (section, id) => selectItemById(section, id)(state)
+  selectItemById: (section, id) => selectItemById(section, id)(state),
+  user: selectUser(state), 
+  loading: selectSectionLoadingStatus
 })
 
 const mapDispatchToProps = dispatch => ({
   addItemToCart: (item) => dispatch(addItemToCart(item))
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductPage);
+export default WithLoader(connect(mapStateToProps, mapDispatchToProps)(ProductPage));

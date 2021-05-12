@@ -8,12 +8,11 @@ const HeaderComponent = () => (
     <HeaderContainer>
         <HeaderWrapper>
             <Link to="/">
-                <Header as='h2' inverted>
+                <Header as='h2'>
                     <Icon name='compass outline' />
                     <Header.Content>Cloth Store</Header.Content>
                 </Header>
             </Link>
-
             <Nav />
         </HeaderWrapper>
     </HeaderContainer>

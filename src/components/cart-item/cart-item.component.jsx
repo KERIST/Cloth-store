@@ -1,57 +1,35 @@
-import styled from 'styled-components';
-import { Table, Icon } from 'semantic-ui-react';
+import { Table, Button, Icon } from 'semantic-ui-react';
 
-const CartItemImage = styled.img`
-  height: 100px;
-`;
+import { CartItemImage, CartItemName, CartItemSizeContainer, CartItemSizeValue, CartItemDeleteBtn, CartItemQuantityValue } from './cart-item.styles';
 
-const CartItemName = styled.div`
-
-`;
-
-const CartItemSizeContainer = styled.div`
-
-`; 
-
-const CartItemSizeValue = styled.span`
-
-`; 
-
-const CartItemDeleteBtn = styled(Icon)`
-  margin-left: 2rem;
-  cursor: pointer;
-`
-
-
-const CartItem = ({ id, name, imageUrl, size, price, quantity, removeItemFromCart }) => (
+const CartItem = ({ id, name, imageUrl, size, price, quantity, section, removeItemFromCart, changeItemAmount }) => (
   <Table.Row>
-    <Table.Cell>
+    <Table.Cell width="1">
       <CartItemImage src={imageUrl} alt={name} />
     </Table.Cell>
     <Table.Cell>
-      <CartItemName>{name}</CartItemName>
+      <CartItemName to={`store/${section}/product-${id}`}>{name}</CartItemName>
       <CartItemSizeContainer>Size: <CartItemSizeValue>{size}</CartItemSizeValue></CartItemSizeContainer>
     </Table.Cell>
-    <Table.Cell>
+    <Table.Cell width="2">
       $ {price}
     </Table.Cell>
-    <Table.Cell>
-      {quantity}
+    <Table.Cell width="3">
+      <Button icon size='mini' onClick={() => {changeItemAmount(id, quantity - 1)}}>
+        <Icon name='chevron down' />
+      </Button>
+      <CartItemQuantityValue>{quantity}</CartItemQuantityValue>
+      <Button icon size='mini' onClick={() => {changeItemAmount(id, quantity + 1)}}>
+        <Icon name='chevron up' />
+      </Button>
     </Table.Cell>
-    <Table.Cell>
+    <Table.Cell width="1">
       $ {quantity * price}
+    </Table.Cell>
+    <Table.Cell width="1">
       <CartItemDeleteBtn name='delete' color="red" size="big" onClick={() => {removeItemFromCart(id)}}/>
     </Table.Cell>
   </Table.Row>
-)
-
-  // description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iusto commodi error perferendis minus consequatur. Molestias corporis distinctio ducimus magnam est accusamus, molestiae velit quae blanditiis ea voluptate quo, architecto laudantium!"
-  // id: "15"
-  // imageUrl: "https://i.ibb.co/XzcwL5s/black-shearling.png"
-  // name: "Black Jean Shearling"
-  // price: 50
-  // quantity: 3
-  // section: "jackets"
-  // size: "8"
+);
 
 export default CartItem;

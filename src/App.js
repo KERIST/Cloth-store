@@ -6,10 +6,21 @@ import StorePage from './pages/storepage/storepage.component';
 import SectionPage from './pages/section-page/section-page.component';
 import ProductPage from './pages/product-page/product-page.component';
 import CartPage from './pages/cart-page/cart-page.component';
+import SignInPage from './pages/signin-page/signin-page.component';
+import SignUpPage from './pages/signup-page/signup-page.component';
+import Page404 from './pages/page-404/page404.component';
+
+import { connect } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchItemsStart } from './redux/sections/sections.actions';
 
 import 'semantic-ui-css/semantic.min.css'
 
-function App() {
+function App({ fetchItemsStart }) {
+  useEffect(() => {
+    fetchItemsStart();
+  }, [fetchItemsStart]);
+
   return (
     <div className="App">
       <HeaderComponent />
@@ -19,9 +30,16 @@ function App() {
         <Route exact path="/store/:section" component={SectionPage} />
         <Route exact path="/store/:section/product-:id" component={ProductPage} />
         <Route exact path="/cart" component={CartPage} />
+        <Route exact path="/sign-in" component={SignInPage} />
+        <Route exact path="/sign-up" component={SignUpPage} />
+        <Route exact path="/404" component={Page404} />
       </Switch>
     </div>
   );
 }
 
-export default App;
+const mapDispatchToProps = dispatch => ({
+  fetchItemsStart: () => {dispatch(fetchItemsStart())}
+});
+
+export default connect(null, mapDispatchToProps)(App);

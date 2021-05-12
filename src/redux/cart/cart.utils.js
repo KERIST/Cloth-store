@@ -16,3 +16,17 @@ export const addItemToCart = (cartItems, itemToAdd) => {
 export const removeItemFromCart = (cartItems, itemToRemoveId) => {
   return cartItems.filter(({ id }) => id !== itemToRemoveId);
 }
+
+export const changeItemAmount = (cartItems, { itemId, amount }) => {
+  if(amount === 0) {
+    return removeItemFromCart(cartItems, itemId)
+  } else {
+    return cartItems.map((item) => {
+      if(item.id === itemId) {
+        return {...item, quantity: amount}
+      } else {
+        return item;
+      }
+    })
+  }
+}

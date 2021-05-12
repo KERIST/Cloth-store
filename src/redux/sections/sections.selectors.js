@@ -1,6 +1,8 @@
 import { createSelector } from 'reselect';
 
-export const selectSectionsItems = state => state.items;
+export const selectSectionsItems = state => state.sections.items;
+
+export const selectSectionLoadingStatus = state => state.sections.loading;
 
 export const selectSectionsItemsForOverview = createSelector(selectSectionsItems, (items => {
   let sectionsArray = Object.entries(items);

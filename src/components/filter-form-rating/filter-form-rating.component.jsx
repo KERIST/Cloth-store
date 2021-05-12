@@ -1,27 +1,6 @@
 import { Rating } from 'semantic-ui-react';
-import styled from 'styled-components';
 
-const FilterFormRatingContainer = styled.label`
-  display: flex;
-  cursor: pointer;
-  align-items: center;
-
-  i {
-    cursor: pointer !important;
-  }
-`;
-
-const FilterFormRatingText = styled.div`
-
-`;
-
-const FilterFormRatingInput = styled.input`
-  display: none;
-
-  &:checked ~ ${FilterFormRatingText} {
-    font-weight: 700;
-  }
-`;
+import { FilterFormRatingContainer, FilterFormRatingInput, FilterFormRatingText } from './filter-form-rating.styles';
 
 const FilterFormRating = ({ inputValue, inputName, ratingMax, ratingValue, ratingChangeHandler }) => (
   <FilterFormRatingContainer>

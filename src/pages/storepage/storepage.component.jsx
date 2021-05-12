@@ -1,11 +1,7 @@
 import BreadcrumbComponent from '../../components/breadcrumb/breadcrumb.component';
 import SectionsOverview from '../../components/sections-overview/sections-overview.component';
-import styled from 'styled-components';
-
-const StorePageContainer = styled.section`
-  max-width: 1480px;
-  margin: 0 auto;
-`
+import WithLoader from '../../components/withLoader/withLoader.component';
+import { StorePageContainer } from './storepage.styles';
 
 const StorePage = () => {
   return <StorePageContainer>
@@ -14,4 +10,4 @@ const StorePage = () => {
   </StorePageContainer>
 }
 
-export default StorePage;
+export default WithLoader(StorePage);
