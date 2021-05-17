@@ -1,6 +1,6 @@
 # Cloth-store
 
-This project is hosted on [https://store.kerist.org/](store.kerist.org)
+This project is hosted on [store.kerist.org](https://store.kerist.org/)
 
 ## Available Scripts
 
