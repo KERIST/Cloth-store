@@ -1,16 +1,12 @@
 import { put, takeLatest, all, call } from 'redux-saga/effects';
 
+import { getAllItemsApi } from '../../api/items';
 import { fetchItemsSuccess, fetchItemsFailure } from './sections.actions';
 import SectionTypes from './sections.types';
 
 export function* fetchItemsAsync() {
   try {
-    const itemsData = yield fetch('/api/getallitems', {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json'
-      }
-    }).then(response => response.json())
+    const itemsData = yield getAllItemsApi().then(response => response.json())
 
     yield put(fetchItemsSuccess(itemsData));
   } catch (error) {

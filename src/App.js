@@ -11,15 +11,12 @@ import SignUpPage from './pages/signup-page/signup-page.component';
 import Page404 from './pages/page-404/page404.component';
 
 import { connect } from 'react-redux';
-import { useEffect } from 'react';
 import { fetchItemsStart } from './redux/sections/sections.actions';
 
 import 'semantic-ui-css/semantic.min.css'
 
 function App({ fetchItemsStart }) {
-  useEffect(() => {
-    fetchItemsStart();
-  }, [fetchItemsStart]);
+  fetchItemsStart();
 
   return (
     <div className="App">
