@@ -10,7 +10,7 @@ import { rootSagas } from './root-sagas';
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: ['cart']
+    whitelist: ['user', 'cart']
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

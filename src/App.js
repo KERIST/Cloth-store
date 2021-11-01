@@ -1,22 +1,31 @@
-import { Switch, Route } from 'react-router-dom';
-
-import HeaderComponent from './components/header/header.component';
-import HomePage from './pages/homepage/homepage.component';
-import StorePage from './pages/storepage/storepage.component';
-import SectionPage from './pages/section-page/section-page.component';
-import ProductPage from './pages/product-page/product-page.component';
-import CartPage from './pages/cart-page/cart-page.component';
-import SignInPage from './pages/signin-page/signin-page.component';
-import SignUpPage from './pages/signup-page/signup-page.component';
-import Page404 from './pages/page-404/page404.component';
-
+import { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Switch, Route } from 'react-router-dom';
+import { createStructuredSelector } from 'reselect';
+import loadable from '@loadable/component';
+
+import { updateAccessTokenHeader } from './api/auth';
+import { selectUser } from './redux/user/user.selectors';
 import { fetchItemsStart } from './redux/sections/sections.actions';
 
 import 'semantic-ui-css/semantic.min.css'
 
-function App({ fetchItemsStart }) {
+import HeaderComponent from './components/header/header.component';
+const HomePage = loadable(() => import('./pages/homepage/homepage.component'));
+const StorePage = loadable(() => import('./pages/storepage/storepage.component'));
+const SectionPage = loadable(() => import('./pages/section-page/section-page.component'));
+const ProductPage = loadable(() => import('./pages/product-page/product-page.component'));
+const CartPage = loadable(() => import('./pages/cart-page/cart-page.component'));
+const SignInPage = loadable(() => import('./pages/signin-page/signin-page.component'));
+const SignUpPage = loadable(() => import('./pages/signup-page/signup-page.component'));
+const Page404 = loadable(() => import('./pages/page-404/page404.component'));
+
+function App({ fetchItemsStart, user }) {
   fetchItemsStart();
+
+  useEffect(function() {
+    updateAccessTokenHeader(user);
+  }, [user]);
 
   return (
     <div className="App">
@@ -35,8 +44,12 @@ function App({ fetchItemsStart }) {
   );
 }
 
+const mapStateToProps = createStructuredSelector({
+  user: selectUser,
+});
+
 const mapDispatchToProps = dispatch => ({
   fetchItemsStart: () => {dispatch(fetchItemsStart())}
 });
 
-export default connect(null, mapDispatchToProps)(App);
+export default connect(mapStateToProps, mapDispatchToProps)(App);

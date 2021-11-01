@@ -8,6 +8,7 @@ import { selectUser } from '../../redux/user/user.selectors';
 
 import ProductSize from '../../components/product-size/product-size.component';
 import BreadcrumbComponent from '../../components/breadcrumb/breadcrumb.component';
+import ReviewsContainer from '../../components/reviews-container/reviews-container.component';
 import { ProductContainer, ProductImagesContainer, ProductDetailsContainer, 
   ProductName, ProductRating, ProductPrice, 
   ProductQuantity, ProductQuantityValue, ProductSizes,
@@ -99,7 +100,7 @@ class ProductPage extends React.Component {
   }
 
   render() {
-    const { quantityValue, itemData: { name, price, sizes, description, imageUrl }, showWarningMessage } = this.state;
+    const { quantityValue, itemData: { name, price, sizes, description, imageUrl, reviews }, showWarningMessage } = this.state;
     const { user } = this.props;
     const { handleFormSubmit, handleDecreaseBtnClick, handleIncreaseBtnClick, handleSizeRadioChange} = this;
 
@@ -143,6 +144,7 @@ class ProductPage extends React.Component {
           <Button color='black' fluid type="submit" size="huge">
             <Icon name='shop' /> ADD TO CART
           </Button>
+          <ReviewsContainer reviews={reviews}/>
         </ProductDetailsContainer>
       </ProductContent>
     </ProductContainer>);

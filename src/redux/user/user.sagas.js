@@ -6,13 +6,13 @@ import { signInWithEmailSuccess, signInWithEmailFailure, registrationWithEmailSu
 
 export function* signInWithEmailAsync({ payload: { email, password } }) {
   try {
-    const response = yield signInApi(JSON.stringify({email, password}));
+    const response = yield signInApi('', {email, password});
 
     if(response.status === 200) {
       const user = yield response.json();
   
       yield put(signInWithEmailSuccess(user));
-    } else {
+    } else { 
       yield put(signInWithEmailFailure('Incorrect email or password'));
     }
   } catch(error) {
@@ -22,7 +22,7 @@ export function* signInWithEmailAsync({ payload: { email, password } }) {
 
 export function* registrationWithEmailAsync({ payload: { name, email, password }}) {
   try {
-    const response = yield signUpApi(JSON.stringify({ name, email, password })).then(data => data.json());
+    const response = yield signUpApi.post('', { name, email, password }).then(data => data.json());
 
     if('error' in response) {
       yield put(registrationWithEmailFailure(response.error));
