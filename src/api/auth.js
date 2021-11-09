@@ -3,7 +3,7 @@ import axios from "axios";
 export function updateAccessTokenHeader(user) {
   if (user) {
     axios.defaults.headers.common = {
-      "x-access-token": user.token,
+      "Authorization": `Bearer: ${user.token}`,
     };
   }
 }
@@ -13,7 +13,6 @@ export const signInApi = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  method: "POST",
 });
 
 export const signUpApi = axios.create({
@@ -21,5 +20,4 @@ export const signUpApi = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  method: "POST",
 });

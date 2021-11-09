@@ -76,7 +76,7 @@ class ProductPage extends React.Component {
     }))
   }
 
-  handleFormSubmit(e) {
+  handleFormSubmit = (e) => {
     e.preventDefault();
 
     const { addItemToCart ,match: { params: { id } } } = this.props;

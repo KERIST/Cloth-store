@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 export const getAllItemsApi = axios.create({
-  baseURL: '/api/getallitems',
+  baseURL: '/api/items/all',
   headers: {
     'Content-Type': 'application/json'
   },
-  method: 'POST',
+  method: 'GET',
 })
 

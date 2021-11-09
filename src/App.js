@@ -25,7 +25,7 @@ function App({ fetchItemsStart, user }) {
 
   useEffect(function() {
     updateAccessTokenHeader(user);
-  }, [user]);
+  }, []);
 
   return (
     <div className="App">
